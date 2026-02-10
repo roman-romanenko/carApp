@@ -32,6 +32,7 @@
         <sonar.projectName>roman-romanenko_carApp_backend</sonar.projectName>
 
         <sonar.organization>roman-romanenko</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
