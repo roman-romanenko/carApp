@@ -1,6 +1,6 @@
-import {Navigate, Outlet} from "react-router-dom";
-import {APP_ROUTES} from "./constants.ts";
+import {Outlet} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
+import NotFound from "../../pages/NotFound";
 
 export default function ProtectedRoute() {
     const { user } = useAuth();
@@ -9,5 +9,5 @@ export default function ProtectedRoute() {
         return <div>Loading...</div>
     }
 
-    return (user ? <Outlet/> : <Navigate to={APP_ROUTES.index}/>)
+    return (user ? <Outlet/> : <NotFound/>)
 }

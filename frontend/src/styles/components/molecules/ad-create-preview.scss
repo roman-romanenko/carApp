@@ -1,0 +1,42 @@
+.ad-preview-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  overflow: hidden;
+  padding-bottom: 16px;
+}
+
+.ad-preview-main-image img,
+.ad-preview-thumbs img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.ad-preview-main-image {
+  background: #111;
+}
+
+.ad-preview-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 10px;
+  grid-template-rows: auto;
+
+  & img {
+    height: 100%;
+    max-height: 80px;
+  }
+
+}
+
+.ad-preview-info {
+  padding: 0 16px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 700;
+}
