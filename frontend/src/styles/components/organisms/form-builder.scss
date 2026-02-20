@@ -1,0 +1,40 @@
+@use "../../variables" as *;
+
+.form-builder {
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+  width: 100%;
+
+  &__ads-dashboard {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .form-field {
+    flex: 1;
+  }
+
+  .btn-submit {
+    align-self: flex-start;
+    margin-top: $space-md;
+    padding: $space-sm $space-xl;
+    font-weight: 600;
+    font-size: $font-size-md;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    border-radius: $radius-lg;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

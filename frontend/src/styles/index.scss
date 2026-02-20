@@ -1,2 +1,21 @@
 @use "components";
 @use "pages";
+@use "toast";
+
+@use "theme";
+@use "animations";
+@use "variables" as *;
+
+body {
+  font-family: $font-main;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.ads-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $space-lg;
+  margin-top: $space-lg;
+}

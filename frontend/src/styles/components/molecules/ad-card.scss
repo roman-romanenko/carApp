@@ -1,0 +1,54 @@
+@use "../../variables" as *;
+.ad-card {
+  background: var(--color-surface-light);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  transition: $transition-normal;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  &__thumbs {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+
+    img {
+      width: 100%;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex: 1;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  &__body {
+    padding: $space-md;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  &__price {
+    font-size: $font-size-md;
+    color: var(--color-secondary);
+    margin: 4px 0;
+  }
+
+  &__details {
+    font-size: $font-size-sm;
+    color: var(--color-text-muted);
+  }
+}

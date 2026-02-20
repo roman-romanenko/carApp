@@ -1,7 +1,8 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
-import {GET_CURRENT_USER} from "../api/apiUrls.ts";
-import type {AuthContextType, User} from "./types.ts";
+import {API_GET_CURRENT_USER} from "../api/apiUrls.ts";
+import type {AuthContextType} from "./types.ts";
+import type {User} from "../api/types.ts";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -10,7 +11,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         axios
-            .get(GET_CURRENT_USER)
+            .get(API_GET_CURRENT_USER)
             .then((res) => setUser(res.data))
             .catch(() => setUser(null));
     }, []);
