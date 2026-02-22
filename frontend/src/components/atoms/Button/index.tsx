@@ -1,5 +1,6 @@
 import React from "react";
 import type {ButtonProps} from "./types.ts";
+import classNames from "classnames";
 
 const Button: React.FC<ButtonProps> = ({
    onClick,
@@ -8,11 +9,17 @@ const Button: React.FC<ButtonProps> = ({
    className = "",
    onlyIcon = false,
    disabled = false,
-   type = "button"
+   type = "button",
+   kind
 }) => {
     return (
         <button
-            className={`btn ${className} ${onlyIcon ? "btn--icon" : ""}`}
+            className={classNames(
+                "btn",
+                onlyIcon && "btn--icon",
+                kind && `btn-${kind}`,
+                className && className
+            )}
             onClick={onClick}
             disabled={disabled}
             type={type}

@@ -1,0 +1,67 @@
+@use "../../../styles/variables" as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: $space-md;
+  border-radius: $radius-md;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: $font-main;
+  transition: all $transition-fast;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--icon {
+    padding: 0.4rem;
+    justify-content: center;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.2rem;
+  }
+
+  &__text {
+    display: inline-flex;
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text);
+  }
+
+  &.btn-secondary {
+    background: var(--color-secondary);
+    color: var(--color-text);
+  }
+
+  &.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  &.btn-danger {
+    background: var(--color-accent);
+    color: var(--color-text);
+  }
+
+}
+
+
