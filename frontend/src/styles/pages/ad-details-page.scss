@@ -1,0 +1,21 @@
+.details {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.details__top {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.details__description {
+  margin-top: 40px;
+}
+
+.details__comments {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}

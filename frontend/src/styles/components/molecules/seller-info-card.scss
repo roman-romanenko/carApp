@@ -1,0 +1,15 @@
+.seller-card {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-medium);
+  position: sticky;
+  top: 100px;
+
+  &__price {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+  }
+}

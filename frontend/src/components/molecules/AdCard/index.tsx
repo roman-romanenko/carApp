@@ -1,10 +1,19 @@
-import type {Ad} from "../../../pages/Ads/types.ts";
+import {generatePath, useNavigate} from "react-router-dom";
+import {APP_ROUTES} from "../../../system/router/constants.ts";
+import type {AdResponeType} from "../../../pages/Ads/types.ts";
 
-const AdCard = ({ ad }: { ad: Ad }) => {
+const AdCard = ({ ad }: { ad: AdResponeType }) => {
     const title = `${ad.brand} ${ad.model} ${ad.year}`;
+    const navigate = useNavigate();
+
+    const onDetailsPage = () => {
+        const link = generatePath(APP_ROUTES.ads.details, { id: ad.id })
+
+        navigate(link)
+    }
 
     return (
-        <div className="ad-card">
+        <div className="ad-card" onClick={onDetailsPage}>
             <img src={ad.images[0]} alt={ad.title} className="ad-card__image"/>
 
             <div className="ad-card__thumbs">
@@ -13,7 +22,7 @@ const AdCard = ({ ad }: { ad: Ad }) => {
                 ))}
             </div>
 
-            <div className="ad-card__body">
+            <div className="ad-card__body" onClick={onDetailsPage}>
                 <h3 className="ad-card__title">{title}</h3>
                 <p className="ad-card__price">${ad.price}</p>
             </div>

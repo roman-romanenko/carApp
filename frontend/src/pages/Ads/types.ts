@@ -6,6 +6,9 @@ type Ad<T> = {
     brand: string,
     model: string,
     year: number,
+    transmission: string,
+    fuel: string,
+    mileage: number,
     userId?: string,
     images: T[];
 };
