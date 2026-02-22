@@ -47,6 +47,8 @@ public class AdService {
             }
         }
 
+        String location = dto.zip() + " " + dto.city()  + ", " + dto.country();
+
         Ad ad = Ad.builder()
                 .userId(userId)
                 .images(imageUrls)
@@ -58,7 +60,7 @@ public class AdService {
                 .mileage(dto.mileage())
                 .fuel(dto.fuel())
                 .transmission(dto.transmission())
-                .location(dto.location())
+                .location(location)
                 .build();
 
         return adRepository.save(ad);

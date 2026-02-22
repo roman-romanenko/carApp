@@ -48,7 +48,7 @@ class AdServiceTest {
     void createAd_WithoutImages() {
         AdRequestDto dto = new AdRequestDto(
                 "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "Germany"
+                50000, "Diesel", "Automatic", "42285", "Germany", "Wuppertal"
         );
 
         when(adRepository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -73,7 +73,7 @@ class AdServiceTest {
 
         AdRequestDto dto = new AdRequestDto(
                 "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "Germany"
+                50000, "Diesel", "Automatic", "42285", "Germany", "Wuppertal"
         );
 
         Ad ad = adService.createAd(dto, List.of(file), "user1");

@@ -14,6 +14,7 @@ const CreateAdPage = () => {
         "Basic Info",
         "Photos & Description",
         "Technical",
+        "Location"
     ];
     const { onCreate } = useApiHelpers();
     const [step, setStep] = useState(0);

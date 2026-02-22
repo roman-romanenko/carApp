@@ -13,5 +13,11 @@ type Ad<T> = {
     images: T[];
 };
 
-export type AdRequestType = Ad<File>;
-export type AdResponeType = Ad<string>;
+export type AdRequestType = Ad<File> & {
+    zip: string,
+    country: string,
+    city: string,
+};
+export type AdResponeType = Ad<string> & {
+    location: string
+};

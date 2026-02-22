@@ -9,6 +9,8 @@ public record AdRequestDto(
         int mileage,
         String fuel,
         String transmission,
-        String location
+        String zip,
+        String country,
+        String city
 ) {
 }
