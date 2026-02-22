@@ -2,11 +2,13 @@ package org.example.backend.ad;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.cloudinary.CloudinaryService;
+import org.example.backend.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,12 @@ public class AdService {
             return adRepository.findByBrand(brand);
         }
         return adRepository.findAll();
+    }
+
+    public Ad getAdById(String id) {
+        return adRepository.findById(id)
+                .orElseThrow(() ->
+                        new NotFoundException("Ad with id " + id + " does not exist"));
     }
 
     public Ad createAd(AdRequestDto dto,
@@ -50,6 +58,7 @@ public class AdService {
                 .mileage(dto.mileage())
                 .fuel(dto.fuel())
                 .transmission(dto.transmission())
+                .location(dto.location())
                 .build();
 
         return adRepository.save(ad);

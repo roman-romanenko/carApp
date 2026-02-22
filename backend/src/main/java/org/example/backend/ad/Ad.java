@@ -18,5 +18,6 @@ public record Ad(
         int year,
         int mileage,
         String fuel,
-        String transmission
+        String transmission,
+        String location
 ) {}
