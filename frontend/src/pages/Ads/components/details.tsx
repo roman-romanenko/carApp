@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import type {AdResponeType} from "../types.ts";
 import Gallery from "../../../components/molecules/Gallery";
 import SellerInfoCard from "../../../components/molecules/SellerInfoCard";
 import TechnicalData from "../../../components/molecules/TechnicalData";
+import {useApiHelpers} from "../apiHooks.ts";
+import NotFound from "../../NotFound";
 
 const AdDetailsPage = () => {
     const { id } = useParams();
+    const { onGetAd, loading } = useApiHelpers();
     const [ad, setAd] = useState<AdResponeType | null>(null);
 
     useEffect(() => {
-        axios.get(`/api/ads/${id}`)
-            .then(res => setAd(res.data))
-            .catch(err => console.error(err));
+        if (!id) return;
+
+        onGetAd(id, setAd)
     }, [id]);
 
-    if (!ad) return <div>Loading...</div>;
+    if (loading) return <div>Loading...</div>;
+
+    if(!ad) return <NotFound />
 
     return (
         <div className="details">
             <div className="details__top">
-                <Gallery images={ad.images} />
+                <Gallery images={ad?.images} />
                 <SellerInfoCard ad={ad} />
             </div>
 
@@ -29,7 +33,7 @@ const AdDetailsPage = () => {
 
             <section className="details__description">
                 <h2>Description</h2>
-                <p>{ad.description}</p>
+                <p>{ad?.description}</p>
             </section>
 
             <section className="details__comments">

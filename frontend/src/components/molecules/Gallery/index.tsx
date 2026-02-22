@@ -2,16 +2,16 @@ import { useState } from "react";
 import {BiChevronLeft, BiChevronRight} from "react-icons/bi";
 import Button from "../../atoms/Button";
 
-const Gallery = ({ images }: { images: string[] }) => {
+const Gallery = ({ images }: { images?: string[] }) => {
     const [active, setActive] = useState(0);
+
+    if (!images?.length) return null;
 
     const prev = () =>
         setActive((prev) => (prev === 0 ? images.length - 1 : prev - 1));
 
     const next = () =>
         setActive((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-
-    if (!images?.length) return null;
 
     return (
         <div className="gallery">
