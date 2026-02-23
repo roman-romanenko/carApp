@@ -5,10 +5,11 @@ import { useApiHelpers } from "./apiHooks.ts";
 import FormBuilder from "../../components/organisms/FormBuilder";
 import { useSearchFormConfig } from "./constantHooks.ts";
 import type {AdResponeType} from "./types.ts";
+import Loader from "../../components/atoms/Loader";
 
 export const AdsPage = () => {
     const [ads, setAds] = useState<AdResponeType[]>([]);
-    const { onGetAll } = useApiHelpers();
+    const { onGetAll, loading } = useApiHelpers();
     const searchConfig = useSearchFormConfig();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -25,6 +26,10 @@ export const AdsPage = () => {
 
         setSearchParams(cleaned);
     };
+
+    if (loading) {
+        return <Loader />;
+    }
 
     return (
         <div className="main-page">
