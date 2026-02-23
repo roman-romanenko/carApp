@@ -17,17 +17,49 @@ public class AdService {
     private final CloudinaryService cloudinaryService;
 
     public List<Ad> filter(String brand, String model, Integer year) {
-        if (brand != null && model != null && year != null) {
-            return adRepository.findByBrandAndModelAndYear(brand, model, year);
+        String cleanBrand = normalize(brand);
+        String cleanModel = normalize(model);
+
+        boolean hasBrand = cleanBrand != null;
+        boolean hasModel = cleanModel != null;
+        boolean hasYear = year != null;
+
+        if (hasBrand && hasModel && hasYear) {
+            return adRepository
+                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYear(
+                            cleanBrand, cleanModel, year
+                    );
         }
-        if (brand != null && model != null) {
-            return adRepository.findByBrandAndModel(brand, model);
+
+        if (hasBrand && hasModel) {
+            return adRepository
+                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCase(
+                            cleanBrand, cleanModel
+                    );
         }
-        if (brand != null) {
-            return adRepository.findByBrand(brand);
+
+        if (hasBrand) {
+            return adRepository.findByBrandContainingIgnoreCase(cleanBrand);
         }
+
+        if (hasModel) {
+            return adRepository.findByModelContainingIgnoreCase(cleanModel);
+        }
+
+        if (hasYear) {
+            return adRepository.findByYear(year);
+        }
+
         return adRepository.findAll();
     }
+
+    private String normalize(String value) {
+        if (value == null) return null;
+
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
 
     public Ad getAdById(String id) {
         return adRepository.findById(id)
