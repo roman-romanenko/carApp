@@ -27,6 +27,12 @@ public class AdController {
         return adService.filter(brand, model, year);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Ad> getAd(@PathVariable String id) {
+        Ad ad = adService.getAdById(id);
+        return ResponseEntity.ok(ad);
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> createAd(
             @RequestPart("data") AdRequestDto dto,

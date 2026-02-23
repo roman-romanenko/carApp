@@ -1,0 +1,37 @@
+@use "../../variables" as *;
+
+.seller-card {
+  background: var(--color-surface);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-medium);
+  position: sticky;
+  top: 100px;
+
+  &__price {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+  }
+
+  &__auto {
+    &-block {
+      display: flex;
+      color: var(--color-text);
+      gap: $space-sm;
+      flex-direction: column;
+      margin-bottom: $space-md;
+    }
+
+    &-title {
+      font-size: $font-size-xl;
+      font-weight: 800;
+    }
+
+    &-subtitle {
+      font-size: $font-size-lg;
+      font-weight: 600;
+    }
+  }
+}

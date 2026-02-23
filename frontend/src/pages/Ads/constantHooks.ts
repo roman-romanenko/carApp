@@ -37,8 +37,9 @@ export const useCreateEditFormConfig = (): FieldConfig[][] => {
     const step1 = getStep1Config();
     const step2 = getStep2Config();
     const step3 = getStep3Config();
+    const step4 = getStep4Config();
 
- return [step1, step2, step3]
+ return [step1, step2, step3, step4]
 }
 
 const getStep1Config = (): FieldConfig[] => ([
@@ -120,6 +121,34 @@ const getStep3Config = (): FieldConfig[] => ([
             component: Input,
             componentProps: {
                 placeholder: "Transmission",
+            },
+        },
+    ]
+);
+
+const getStep4Config = (): FieldConfig[] => ([
+        {
+            name: "country",
+            label: "Country",
+            component: Input,
+            componentProps: {
+                placeholder: "Germany",
+            },
+        },
+        {
+            name: "city",
+            label: "City",
+            component: Input,
+            componentProps: {
+                placeholder: "Berlin",
+            },
+        },
+        {
+            name: "zip",
+            label: "Postal Code",
+            component: Input,
+            componentProps: {
+                placeholder: "42285",
             },
         },
     ]

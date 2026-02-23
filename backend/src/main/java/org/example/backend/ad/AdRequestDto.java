@@ -8,6 +8,9 @@ public record AdRequestDto(
         int year,
         int mileage,
         String fuel,
-        String transmission
+        String transmission,
+        String zip,
+        String country,
+        String city
 ) {
 }

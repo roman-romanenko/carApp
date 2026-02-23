@@ -1,21 +1,24 @@
 package org.example.backend.ad;
 
+import org.example.backend.exceptions.NotFoundException;
 import org.example.backend.security.CustomOAuth2UserService;
 import org.example.backend.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,7 +42,7 @@ class AdControllerTest {
 
         Ad ad = Ad.builder().brand("BMW").model("X5").year(2022).build();
 
-        Mockito.when(adService.filter("BMW", null, null))
+        when(adService.filter("BMW", null, null))
                 .thenReturn(List.of(ad));
 
         mockMvc.perform(get("/api/ads")
@@ -53,7 +56,7 @@ class AdControllerTest {
     void createAd() throws Exception {
         Ad ad = Ad.builder().brand("BMW").model("X5").build();
 
-        Mockito.when(adService.createAd(any(), any(), any()))
+        when(adService.createAd(any(), any(), any()))
                 .thenReturn(ad);
 
         MockMultipartFile json = new MockMultipartFile(
@@ -89,5 +92,39 @@ class AdControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.brand").value("BMW"))
                 .andExpect(jsonPath("$.model").value("X5"));
+    }
+
+    @Test
+    @DisplayName("Should return ad by Id")
+    void getAdById() throws Exception {
+        //Given
+        String id = "1";
+        Ad ad = new Ad(id, "user1", List.of(), "desc", 10000,
+                "BMW", "X5", 2022, 50000,
+                "Diesel", "Automatic", "Germany");
+        when(adService.getAdById(id)).thenReturn(ad);
+
+        //When + Then
+        mockMvc.perform(get("/api/ads/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.description").value("desc"))
+                .andExpect(jsonPath("$.brand").value("BMW"))
+                .andExpect(jsonPath("$.model").value("X5"));
+    }
+
+    @Test
+    @DisplayName("Should return 404 when ad with Id Not Found")
+    void getAdById_shouldReturn404() throws Exception {
+        //Given
+        String id = "1";
+        when(adService.getAdById(id))
+                .thenThrow(new NotFoundException("Ad with id " + id + " does not exist"));
+        //When + Then
+
+        mockMvc.perform(get("/api/ads/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").value(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath("$.errorMessage").value("Ad with id " + id + " does not exist"));
     }
 }
