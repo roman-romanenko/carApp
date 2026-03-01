@@ -33,6 +33,11 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
+    @GetMapping("/user")
+    public List<Ad> getAdsByUserId(@AuthenticationPrincipal OAuth2User user) {
+        return adService.getAdsByUserId(user.getName());
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> createAd(
             @RequestPart("data") AdRequestDto dto,

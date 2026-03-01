@@ -19,4 +19,5 @@ public interface AdRepository extends MongoRepository<Ad, String> {
             String model,
             Integer year
     );
+    List<Ad> findByUserId(String userId);
 }

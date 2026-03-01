@@ -3,6 +3,7 @@ package org.example.backend.ad;
 import lombok.Builder;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -12,6 +13,8 @@ public record Ad(
         List<String> images,
         String description,
         double price,
+        AdStatus status,
+        LocalDateTime createdAt,
         //auto
         String brand,
         String model,

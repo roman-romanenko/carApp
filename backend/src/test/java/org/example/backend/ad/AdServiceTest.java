@@ -9,6 +9,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,8 +91,23 @@ class AdServiceTest {
     void getAdById() {
         //Given
         String id = UUID.randomUUID().toString();
-        Ad newAd = new Ad(id,  "userID", List.of("imageUrl"), "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "Germany");
+        Ad newAd = Ad.builder()
+                    .id(id)
+                    .userId("userID")
+                    .images(List.of("imageUrl"))
+                    .description("desc")
+                    .price(10000)
+                    .status(AdStatus.ACTIVE)
+                    .createdAt(LocalDateTime.now())
+                    .brand("BMW")
+                    .model("X5")
+                    .year(2022)
+                    .mileage(50000)
+                    .fuel("Diesel")
+                    .transmission("42285")
+                    .location("Wuppertal")
+                    .build();
+
         when(adRepository.findById(id)).thenReturn(Optional.of(newAd));
 
         //When
@@ -118,5 +134,38 @@ class AdServiceTest {
         assertThat(exception.getMessage())
                 .isEqualTo("Ad with id " + id + " does not exist");
         verify(adRepository).findById(id);
+    }
+
+    @Test
+    @DisplayName("Should return ads by userId")
+    void getAdsByUserId() {
+        //Given
+        String userId = UUID.randomUUID().toString();
+        String id = UUID.randomUUID().toString();
+        Ad ad = Ad.builder()
+                .id(id)
+                .userId(userId)
+                .images(List.of("imageUrl"))
+                .description("desc")
+                .price(10000)
+                .status(AdStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .brand("BMW")
+                .model("X5")
+                .year(2022)
+                .mileage(50000)
+                .fuel("Diesel")
+                .transmission("42285")
+                .location("Wuppertal")
+                .build();
+
+        when(adRepository.findByUserId(userId)).thenReturn(List.of(ad));
+
+        //When
+        List<Ad> ads = adService.getAdsByUserId(userId);
+
+        //Then
+        assertThat(ads).isEqualTo(List.of(ad));
+        verify(adRepository).findByUserId(userId);
     }
 }

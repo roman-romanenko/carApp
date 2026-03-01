@@ -14,8 +14,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -99,9 +100,19 @@ class AdControllerTest {
     void getAdById() throws Exception {
         //Given
         String id = "1";
-        Ad ad = new Ad(id, "user1", List.of(), "desc", 10000,
-                "BMW", "X5", 2022, 50000,
-                "Diesel", "Automatic", "Germany");
+        Ad ad = Ad.builder()
+                .id(id)
+                .userId("userID")
+                .images(List.of("imageUrl"))
+                .description("desc")
+                .brand("BMW")
+                .model("X5")
+                .year(2022)
+                .mileage(50000)
+                .fuel("Diesel")
+                .transmission("42285")
+                .location("Wuppertal")
+                .build();
         when(adService.getAdById(id)).thenReturn(ad);
 
         //When + Then
@@ -126,5 +137,40 @@ class AdControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.errorMessage").value("Ad with id " + id + " does not exist"));
+    }
+
+    @Test
+    @DisplayName("Should return ads by userId")
+    void getAdsByUserId() throws Exception {
+        //Given
+        String userId = "1";
+        String adId = UUID.randomUUID().toString();
+        Ad ad = Ad.builder()
+                .id(adId)
+                .userId(userId)
+                .images(List.of("imageUrl"))
+                .description("desc")
+                .price(10000)
+                .status(AdStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .brand("BMW")
+                .model("X5")
+                .year(2022)
+                .mileage(50000)
+                .fuel("Diesel")
+                .transmission("42285")
+                .location("Wuppertal")
+                .build();
+        when(adService.getAdsByUserId(userId)).thenReturn(List.of(ad));
+
+        //When + Then
+        mockMvc.perform(get("/api/ads/user").with(oauth2Login()
+                        .attributes(attrs -> attrs.put("sub", userId))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(adId))
+                .andExpect(jsonPath("$.[0].userId").value(userId))
+                .andExpect(jsonPath("$.[0].description").value("desc"))
+                .andExpect(jsonPath("$.[0].brand").value("BMW"))
+                .andExpect(jsonPath("$.[0].model").value("X5"));
     }
 }

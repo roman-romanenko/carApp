@@ -6,9 +6,9 @@ import org.example.backend.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +67,11 @@ public class AdService {
                         new NotFoundException("Ad with id " + id + " does not exist"));
     }
 
+
+    public List<Ad> getAdsByUserId(String userId) {
+        return adRepository.findByUserId(userId);
+    }
+
     public Ad createAd(AdRequestDto dto,
                        List<MultipartFile> files,
                        String userId) {
@@ -86,6 +91,8 @@ public class AdService {
                 .images(imageUrls)
                 .description(dto.description())
                 .price(dto.price())
+                .status(AdStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
                 .brand(dto.brand())
                 .model(dto.model())
                 .year(dto.year())
