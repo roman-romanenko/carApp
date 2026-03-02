@@ -26,31 +26,31 @@ public class AdService {
 
         if (hasBrand && hasModel && hasYear) {
             return adRepository
-                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYear(
-                            cleanBrand, cleanModel, year
+                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus(
+                            cleanBrand, cleanModel, year, AdStatus.ACTIVE
                     );
         }
 
         if (hasBrand && hasModel) {
             return adRepository
-                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCase(
-                            cleanBrand, cleanModel
+                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndStatus(
+                            cleanBrand, cleanModel, AdStatus.ACTIVE
                     );
         }
 
         if (hasBrand) {
-            return adRepository.findByBrandContainingIgnoreCase(cleanBrand);
+            return adRepository.findByBrandContainingIgnoreCaseAndStatus(cleanBrand, AdStatus.ACTIVE);
         }
 
         if (hasModel) {
-            return adRepository.findByModelContainingIgnoreCase(cleanModel);
+            return adRepository.findByModelContainingIgnoreCaseAndStatus(cleanModel, AdStatus.ACTIVE);
         }
 
         if (hasYear) {
-            return adRepository.findByYear(year);
+            return adRepository.findByYearAndStatus(year, AdStatus.ACTIVE);
         }
 
-        return adRepository.findAll();
+        return adRepository.findByStatus(AdStatus.ACTIVE);
     }
 
     private String normalize(String value) {

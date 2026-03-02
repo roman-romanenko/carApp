@@ -33,15 +33,15 @@ class AdServiceTest {
     @Test
     @DisplayName("Filter by brand, model and year")
     void filter() {
-        Ad ad = Ad.builder().brand("BMW").model("X5").year(2022).build();
+        Ad ad = Ad.builder().brand("BMW").model("X5").year(2022).status(AdStatus.ACTIVE).build();
 
-        when(adRepository.findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYear("BMW", "X5", 2022))
+        when(adRepository.findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus("BMW", "X5", 2022, AdStatus.ACTIVE))
                 .thenReturn(List.of(ad));
 
         List<Ad> result = adService.filter("BMW", "X5", 2022);
 
         assertThat(result).hasSize(1);
-        verify(adRepository).findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYear("BMW", "X5", 2022);
+        verify(adRepository).findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus("BMW", "X5", 2022, AdStatus.ACTIVE);
     }
 
     @Test

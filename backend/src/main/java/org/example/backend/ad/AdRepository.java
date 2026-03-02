@@ -7,17 +7,20 @@ import java.util.List;
 
 @Repository
 public interface AdRepository extends MongoRepository<Ad, String> {
-    List<Ad> findByBrandContainingIgnoreCase(String brand);
-    List<Ad> findByModelContainingIgnoreCase(String model);
-    List<Ad> findByYear(Integer year);
-    List<Ad> findByBrandContainingIgnoreCaseAndModelContainingIgnoreCase(
-            String brand,
-            String model
-    );
-    List<Ad> findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYear(
+    List<Ad> findByBrandContainingIgnoreCaseAndStatus(String brand, AdStatus status);
+    List<Ad> findByModelContainingIgnoreCaseAndStatus(String model, AdStatus status);
+    List<Ad> findByYearAndStatus(Integer year, AdStatus status);
+    List<Ad> findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndStatus(
             String brand,
             String model,
-            Integer year
+            AdStatus status
+    );
+    List<Ad> findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus(
+            String brand,
+            String model,
+            Integer year,
+            AdStatus status
     );
     List<Ad> findByUserId(String userId);
+    List<Ad> findByStatus(AdStatus status);
 }
