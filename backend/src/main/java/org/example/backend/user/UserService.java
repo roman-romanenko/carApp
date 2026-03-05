@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.ad.Ad;
 import org.example.backend.ad.AdRepository;
 import org.example.backend.exceptions.NotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class UserService {
         );
     }
 
-    public void toggleFavorite(String adId, String userId) {
+    public List<String> toggleFavorite(String adId, String userId) {
         User user = getUserById(userId);
 
         if (user.favoriteAdIds().contains(adId)) {
@@ -41,11 +42,25 @@ public class UserService {
         }
 
         userRepository.save(user);
+
+        return user.favoriteAdIds();
     }
 
     public List<Ad> getFavoriteAds(String userId) {
         User user = getUserById(userId);
 
         return adRepository.findAllByIdIn(user.favoriteAdIds());
+    }
+
+    public UserAdInfoDto getUserAdInfoDtoById(String id) {
+        User user = getUserById(id);
+
+        return UserAdInfoDto.builder()
+                .firstName(user.firstName())
+                .lastName(user.lastName())
+                .phone(user.phone())
+                .username(user.username())
+                .avatarUrl(user.avatarUrl())
+                .build();
     }
 }

@@ -23,11 +23,16 @@ public class UserController {
     }
 
     @PostMapping("/favorites/{id}")
-    public void toggleFavorite(
+    public List<String> toggleFavorite(
             @PathVariable String id,
             @AuthenticationPrincipal OAuth2User user
     ) {
-        userService.toggleFavorite(id, user.getName());
+     return userService.toggleFavorite(id, user.getName());
+    }
+
+    @GetMapping("/{id}/ad/info")
+    public UserAdInfoDto getUserAdInfoById(@PathVariable String id) {
+        return userService.getUserAdInfoDtoById(id);
     }
 
     @PutMapping()

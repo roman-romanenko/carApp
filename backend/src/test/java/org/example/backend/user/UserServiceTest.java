@@ -125,4 +125,27 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.updateUser("1", UserDto.builder().build()))
                 .isInstanceOf(NotFoundException.class);
     }
+
+    @Test
+    @DisplayName("Should return User Ad Info Dto")
+     void getUserAdInfoDtoById() {
+        User user = User.builder()
+                .id("1")
+                .lastName("Name")
+                .firstName("First")
+                .phone("999")
+                .avatarUrl("avatarUrl")
+                .favoriteAdIds(List.of("ad1"))
+                .build();
+
+        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+
+        UserAdInfoDto result = userService.getUserAdInfoDtoById("1");
+
+        assertThat(result).isNotNull();
+        assertThat(result.firstName()).isEqualTo("First");
+        assertThat(result.lastName()).isEqualTo("Name");
+        assertThat(result.phone()).isEqualTo("999");
+        assertThat(result.avatarUrl()).isEqualTo("avatarUrl");
+    }
 }

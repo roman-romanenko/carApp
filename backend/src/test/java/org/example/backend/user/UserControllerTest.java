@@ -15,6 +15,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
@@ -115,5 +116,28 @@ class UserControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.errorMessage").value("User not found"));
+    }
+
+
+    @Test
+    @DisplayName("GET /api/user/{id}/ad/info should return User Ad Info Dto")
+    void getUserAdInfoById() throws Exception {
+        UserAdInfoDto userAdInfoDto = UserAdInfoDto.builder()
+                .lastName("Name")
+                .firstName("First")
+                .phone("999")
+                .avatarUrl("avatarUrl")
+                .build();
+
+        when(userService.getUserAdInfoDtoById("1")).thenReturn(userAdInfoDto);
+
+        mockMvc.perform(get("/api/user/{id}/ad/info", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("First"))
+                .andExpect(jsonPath("$.lastName").value("Name"))
+                .andExpect(jsonPath("$.phone").value("999"))
+                .andExpect(jsonPath("$.avatarUrl").value("avatarUrl"));
+
+        verify(userService, times(1)).getUserAdInfoDtoById("1");
     }
 }
