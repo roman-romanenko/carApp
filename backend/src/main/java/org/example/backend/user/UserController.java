@@ -33,7 +33,7 @@ public class UserController {
     @PutMapping()
     public User updateUser(
             @AuthenticationPrincipal OAuth2User user,
-            UserDto userDto
+            @RequestBody UserDto userDto
     ) {
        return userService.updateUser(user.getName(), userDto);
     }
