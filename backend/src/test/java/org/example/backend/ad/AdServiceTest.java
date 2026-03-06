@@ -47,10 +47,10 @@ class AdServiceTest {
     @Test
     @DisplayName("Create ad without images")
     void createAd_WithoutImages() {
-        AdRequestDto dto = new AdRequestDto(
-                "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "42285", "Germany", "Wuppertal"
-        );
+        AdRequestDto dto = AdRequestDto.builder()
+                .brand("BMW")
+                .build();
+
 
         when(adRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -64,6 +64,9 @@ class AdServiceTest {
     @Test
     @DisplayName("Create ad with images")
     void createAd_WithImages() {
+        AdRequestDto dto = AdRequestDto.builder()
+                .brand("BMW")
+                .build();
         MultipartFile file = mock(MultipartFile.class);
 
         when(cloudinaryService.uploadImage(file))
@@ -71,11 +74,6 @@ class AdServiceTest {
 
         when(adRepository.save(any()))
                 .thenAnswer(i -> i.getArgument(0));
-
-        AdRequestDto dto = new AdRequestDto(
-                "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "42285", "Germany", "Wuppertal"
-        );
 
         Ad ad = adService.createAd(dto, List.of(file), "user1");
 
@@ -96,7 +94,7 @@ class AdServiceTest {
                     .userId("userID")
                     .images(List.of("imageUrl"))
                     .description("desc")
-                    .price(10000)
+                    .price(10000.00)
                     .status(AdStatus.ACTIVE)
                     .createdAt(LocalDateTime.now())
                     .brand("BMW")
@@ -167,5 +165,64 @@ class AdServiceTest {
         //Then
         assertThat(ads).isEqualTo(List.of(ad));
         verify(adRepository).findByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("Update ad with reordered images and updated fields")
+    void updateAd_WithMixedImagesAndFieldUpdates() {
+
+        // GIVEN
+        Ad existingAd = Ad.builder()
+                .id("ad1")
+                .description("old desc")
+                .price(1000)
+                .mileage(10000)
+                .images(List.of(
+                        "http://old-image-1",
+                        "http://old-image-2"
+                ))
+                .build();
+
+        when(adRepository.findById("ad1"))
+                .thenReturn(Optional.of(existingAd));
+
+        MultipartFile newFile = mock(MultipartFile.class);
+
+        when(cloudinaryService.uploadImage(newFile))
+                .thenReturn("http://new-image");
+
+        AdRequestDto dto = AdRequestDto.builder()
+                .description("new desc")
+                .price(2000)
+                .mileage(5000)
+                .images(List.of(
+                        "http://old-image-1",
+                        "new_0",
+                        "http://old-image-2"
+                ))
+                .build();
+
+        when(adRepository.save(any()))
+                .thenAnswer(i -> i.getArgument(0));
+
+        Ad updated = adService.updateAd(
+                "ad1",
+                dto,
+                List.of(newFile)
+        );
+
+        assertThat(updated.description()).isEqualTo("new desc");
+        assertThat(updated.price()).isEqualTo(2000);
+        assertThat(updated.mileage()).isEqualTo(5000);
+
+        assertThat(updated.images())
+                .containsExactly(
+                        "http://old-image-1",
+                        "http://new-image",
+                        "http://old-image-2"
+                );
+
+        verify(cloudinaryService).uploadImage(newFile);
+        verify(adRepository).save(any());
     }
 }

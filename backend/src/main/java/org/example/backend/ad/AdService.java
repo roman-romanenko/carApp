@@ -104,4 +104,31 @@ public class AdService {
 
         return adRepository.save(ad);
     }
+
+    public Ad updateAd(String id,
+                       AdRequestDto dto,
+                       List<MultipartFile> newImages) {
+        Ad ad = getAdById(id);
+        List<String> finalImages = new ArrayList<>();
+        int newImageIndex = 0;
+
+        for (String item : dto.images()) {
+            if (item.startsWith("new_")) {
+                MultipartFile file = newImages.get(newImageIndex);
+                String url = cloudinaryService.uploadImage(file);
+                finalImages.add(url);
+                newImageIndex++;
+            } else {
+                finalImages.add(item);
+            }
+        }
+
+        return adRepository.save(ad
+                .withMileage(dto.mileage())
+                .withDescription(dto.description())
+                .withPrice(dto.price())
+                .withImages(finalImages)
+        );
+
+    }
 }

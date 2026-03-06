@@ -41,12 +41,21 @@ public class AdController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> createAd(
             @RequestPart("data") AdRequestDto dto,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
             @AuthenticationPrincipal OAuth2User user
     ) {
         String userId = user.getName();
-        Ad ad = adService.createAd(dto, files, userId);
+        Ad ad = adService.createAd(dto, newImages, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ad);
+    }
+
+    @PutMapping("/{id}")
+    public Ad updateAd(
+            @PathVariable String id,
+            @RequestPart("data") AdRequestDto dto,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages
+    ) {
+        return adService.updateAd(id, dto, newImages);
     }
 }

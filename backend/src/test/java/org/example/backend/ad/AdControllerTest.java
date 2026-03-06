@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -80,7 +81,7 @@ class AdControllerTest {
 
         MockMultipartFile file =
                 new MockMultipartFile(
-                        "files",
+                        "newImages",
                         "image.jpg",
                         MediaType.IMAGE_JPEG_VALUE,
                         "image".getBytes()
@@ -172,5 +173,72 @@ class AdControllerTest {
                 .andExpect(jsonPath("$.[0].description").value("desc"))
                 .andExpect(jsonPath("$.[0].brand").value("BMW"))
                 .andExpect(jsonPath("$.[0].model").value("X5"));
+    }
+
+    @Test
+    @DisplayName("PUT /api/ads/{id} updates ad with new images")
+    void updateAd() throws Exception {
+        String id = "ad1";
+
+        Ad ad = Ad.builder()
+                .id(id)
+                .description("updated desc")
+                .year(2022)
+                .price(2000)
+                .mileage(5000)
+                .images(List.of(
+                        "http://old-image-1",
+                        "http://new-image",
+                        "http://old-image-2"
+                ))
+                .build();
+
+        when(adService.updateAd(anyString(), any(), any()))
+                .thenReturn(ad);
+
+        MockMultipartFile json = new MockMultipartFile(
+                "data",
+                null,
+                MediaType.APPLICATION_JSON_VALUE,
+                """
+                {
+                    "description":"updated desc",
+                    "year":"2022",
+                    "price":2000,
+                    "mileage":5000,
+                    "images":[
+                        "http://old-image-1",
+                        "new_0",
+                        "http://old-image-2"
+                    ]
+                }
+                """.getBytes()
+        );
+
+        MockMultipartFile file = new MockMultipartFile(
+                "newImages",
+                "image.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "image".getBytes()
+        );
+
+        // WHEN + THEN
+        mockMvc.perform(
+                        multipart("/api/ads/{id}", id)
+                                .file(json)
+                                .file(file)
+                                .with(oauth2Login())
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.description").value("updated desc"))
+                .andExpect(jsonPath("$.price").value(2000))
+                .andExpect(jsonPath("$.mileage").value(5000))
+                .andExpect(jsonPath("$.images[1]").value("http://new-image"));
+        verify(adService).updateAd(anyString(), any(), any());
     }
 }
