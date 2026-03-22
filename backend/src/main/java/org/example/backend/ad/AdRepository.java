@@ -22,6 +22,7 @@ public interface AdRepository extends MongoRepository<Ad, String> {
             AdStatus status
     );
     List<Ad> findByUserId(String userId);
+    List<Ad> findByUserIdAndStatus(String userId, AdStatus status);
     List<Ad> findByStatus(AdStatus status);
     List<Ad> findAllByIdIn(List<String> ids);
 }

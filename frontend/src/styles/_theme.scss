@@ -23,6 +23,8 @@
   --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.4);
   --shadow-hover: 0 20px 60px rgba(0, 229, 255, 0.15);
   --shadow-glow: 0 0 40px rgba(0, 229, 255, 0.35);
+
+  --disabled-input-bg: #2a3448
 }
 
 [data-theme="light"] {
@@ -44,6 +46,8 @@
   --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
   --shadow-hover: 0 15px 45px rgba(37, 99, 235, 0.15);
   --shadow-glow: 0 0 30px rgba(37, 99, 235, 0.2);
+
+  --disabled-input-bg: #f3f4f6
 }
 
 

@@ -1,12 +1,20 @@
 .main-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
 
   &__container {
     padding: 2rem;
     z-index: 2;
     position: relative;
+    min-height: 0;
+    display: flex;
+    width: 100%;
+    flex: 1;
+
+    & > * {
+      flex: 1;
+    }
   }
 }

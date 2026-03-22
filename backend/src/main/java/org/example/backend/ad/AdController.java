@@ -34,8 +34,9 @@ public class AdController {
     }
 
     @GetMapping("/user")
-    public List<Ad> getAdsByUserId(@AuthenticationPrincipal OAuth2User user) {
-        return adService.getAdsByUserId(user.getName());
+    public List<Ad> getAdsByUserId(@AuthenticationPrincipal OAuth2User user,
+                                   @RequestParam(required = false) AdStatus status) {
+        return adService.getAdsByUserIdAndStatus(user.getName(), status);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -58,4 +59,14 @@ public class AdController {
     ) {
         return adService.updateAd(id, dto, newImages);
     }
+
+    @PatchMapping("/{id}/{status}")
+    public Ad updateAdStatus(
+            @PathVariable String id,
+            @PathVariable AdStatus status,
+            @AuthenticationPrincipal OAuth2User user) {
+
+        return adService.updateAdStatus(id, user.getName(), status);
+    }
+
 }

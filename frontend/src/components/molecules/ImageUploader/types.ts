@@ -1,4 +1,6 @@
-export type ImageUploaderProps = {
-    value: File[];
-    onChange: (files: File[]) => void;
-};
+export type ImageValue = File | string;
+
+export interface ImageUploaderProps {
+    value?: ImageValue[];
+    onChange?: (files: ImageValue[]) => void;
+}

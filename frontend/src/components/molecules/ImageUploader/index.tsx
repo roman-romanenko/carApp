@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import type {ImageUploaderProps} from "./types.ts";
+import {getImageSrc} from "../../../system/helpers/functions.ts";
 
 export default function ImageUploader({ value = [], onChange }: ImageUploaderProps) {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +66,7 @@ export default function ImageUploader({ value = [], onChange }: ImageUploaderPro
                             )}
 
                             <img
-                                src={URL.createObjectURL(file)}
+                                src={getImageSrc(file)}
                                 alt="preview"
                             />
 

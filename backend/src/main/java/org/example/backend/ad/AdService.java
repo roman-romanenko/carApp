@@ -25,32 +25,34 @@ public class AdService {
         boolean hasYear = year != null;
 
         if (hasBrand && hasModel && hasYear) {
-            return adRepository
-                    .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus(
-                            cleanBrand, cleanModel, year, AdStatus.ACTIVE
+            return sortByCreatedAt(
+                        adRepository
+                        .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus(
+                                cleanBrand, cleanModel, year, AdStatus.ACTIVE
+                        )
                     );
         }
 
         if (hasBrand && hasModel) {
-            return adRepository
+            return sortByCreatedAt(adRepository
                     .findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndStatus(
                             cleanBrand, cleanModel, AdStatus.ACTIVE
-                    );
+                    ));
         }
 
         if (hasBrand) {
-            return adRepository.findByBrandContainingIgnoreCaseAndStatus(cleanBrand, AdStatus.ACTIVE);
+            return sortByCreatedAt(adRepository.findByBrandContainingIgnoreCaseAndStatus(cleanBrand, AdStatus.ACTIVE));
         }
 
         if (hasModel) {
-            return adRepository.findByModelContainingIgnoreCaseAndStatus(cleanModel, AdStatus.ACTIVE);
+            return sortByCreatedAt(adRepository.findByModelContainingIgnoreCaseAndStatus(cleanModel, AdStatus.ACTIVE));
         }
 
         if (hasYear) {
-            return adRepository.findByYearAndStatus(year, AdStatus.ACTIVE);
+            return sortByCreatedAt(adRepository.findByYearAndStatus(year, AdStatus.ACTIVE));
         }
 
-        return adRepository.findByStatus(AdStatus.ACTIVE);
+        return sortByCreatedAt(adRepository.findByStatus(AdStatus.ACTIVE));
     }
 
     private String normalize(String value) {
@@ -67,9 +69,16 @@ public class AdService {
                         new NotFoundException("Ad with id " + id + " does not exist"));
     }
 
-
     public List<Ad> getAdsByUserId(String userId) {
-        return adRepository.findByUserId(userId);
+        return sortByCreatedAt(adRepository.findByUserId(userId));
+    }
+
+    public List<Ad> getAdsByUserIdAndStatus(String userId, AdStatus status) {
+        if (status != null) {
+            return sortByCreatedAt(adRepository.findByUserIdAndStatus(userId, status));
+        }
+
+        return this.getAdsByUserId(userId);
     }
 
     public Ad createAd(AdRequestDto dto,
@@ -130,5 +139,27 @@ public class AdService {
                 .withImages(finalImages)
         );
 
+    }
+
+    public Ad updateAdStatus(String adId, String userId, AdStatus status) {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new NotFoundException("Ad not found"));
+
+//        if (!ad.userId().equals(userId)) {
+//            throw new ForbiddenException("You cannot change this ad");
+//        }
+
+        return adRepository.save(ad.withStatus(status));
+    }
+
+    private List<Ad> sortByCreatedAt(List<Ad> ads) {
+        return ads.stream()
+                .sorted((a, b) -> {
+                    if (a.createdAt() == null && b.createdAt() == null) return 0;
+                    if (a.createdAt() == null) return 1;
+                    if (b.createdAt() == null) return -1;
+                    return b.createdAt().compareTo(a.createdAt());
+                })
+                .toList();
     }
 }

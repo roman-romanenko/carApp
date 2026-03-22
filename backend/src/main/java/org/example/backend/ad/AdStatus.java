@@ -2,7 +2,7 @@ package org.example.backend.ad;
 
 public enum AdStatus {
     ACTIVE,
-    INACTIVE,
+    DEACTIVATED,
     SOLD,
     EXPIRED
 }

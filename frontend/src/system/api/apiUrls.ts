@@ -1,4 +1,10 @@
 export const API_GET_CURRENT_USER = "/api/currentUser";
+export const API_GET_SELLER_INFO = "/api/user/:id/ad/info";
+export const API_UPDATE_CURRENT_USER = "/api/user";
 export const API_CREATE_AD = "/api/ads";
 export const API_GET_ALL_ADS = "/api/ads";
 export const API_GET_AD_BY_ID = "/api/ads/:id";
+export const API_UPDATE_AD_BY_ID = "/api/ads/:id";
+export const API_UPDATE_AD_STATUS_BY_ID = "/api/ads/:id/:status";
+export const API_GET_ADS_BY_USER = "/api/ads/user";
+export const API_GET_USER_FAVORITES = "/api/user/favorites";

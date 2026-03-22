@@ -162,10 +162,10 @@ class AdControllerTest {
                 .transmission("42285")
                 .location("Wuppertal")
                 .build();
-        when(adService.getAdsByUserId(userId)).thenReturn(List.of(ad));
+        when(adService.getAdsByUserIdAndStatus(userId, AdStatus.ACTIVE)).thenReturn(List.of(ad));
 
         //When + Then
-        mockMvc.perform(get("/api/ads/user").with(oauth2Login()
+        mockMvc.perform(get("/api/ads/user?status=ACTIVE").with(oauth2Login()
                         .attributes(attrs -> attrs.put("sub", userId))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(adId))

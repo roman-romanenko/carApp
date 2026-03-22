@@ -1,6 +1,7 @@
 import type {ReactNode} from "react";
 
 export type CardProps = {
-    title: string,
+    title?: string,
     children?: ReactNode
+    maxContentSize?: "sm"
 }
