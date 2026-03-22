@@ -9,6 +9,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,24 +33,24 @@ class AdServiceTest {
     @Test
     @DisplayName("Filter by brand, model and year")
     void filter() {
-        Ad ad = Ad.builder().brand("BMW").model("X5").year(2022).build();
+        Ad ad = Ad.builder().brand("BMW").model("X5").year(2022).status(AdStatus.ACTIVE).build();
 
-        when(adRepository.findByBrandAndModelAndYear("BMW", "X5", 2022))
+        when(adRepository.findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus("BMW", "X5", 2022, AdStatus.ACTIVE))
                 .thenReturn(List.of(ad));
 
         List<Ad> result = adService.filter("BMW", "X5", 2022);
 
         assertThat(result).hasSize(1);
-        verify(adRepository).findByBrandAndModelAndYear("BMW", "X5", 2022);
+        verify(adRepository).findByBrandContainingIgnoreCaseAndModelContainingIgnoreCaseAndYearAndStatus("BMW", "X5", 2022, AdStatus.ACTIVE);
     }
 
     @Test
     @DisplayName("Create ad without images")
     void createAd_WithoutImages() {
-        AdRequestDto dto = new AdRequestDto(
-                "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "42285", "Germany", "Wuppertal"
-        );
+        AdRequestDto dto = AdRequestDto.builder()
+                .brand("BMW")
+                .build();
+
 
         when(adRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -63,6 +64,9 @@ class AdServiceTest {
     @Test
     @DisplayName("Create ad with images")
     void createAd_WithImages() {
+        AdRequestDto dto = AdRequestDto.builder()
+                .brand("BMW")
+                .build();
         MultipartFile file = mock(MultipartFile.class);
 
         when(cloudinaryService.uploadImage(file))
@@ -70,11 +74,6 @@ class AdServiceTest {
 
         when(adRepository.save(any()))
                 .thenAnswer(i -> i.getArgument(0));
-
-        AdRequestDto dto = new AdRequestDto(
-                "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "42285", "Germany", "Wuppertal"
-        );
 
         Ad ad = adService.createAd(dto, List.of(file), "user1");
 
@@ -90,8 +89,23 @@ class AdServiceTest {
     void getAdById() {
         //Given
         String id = UUID.randomUUID().toString();
-        Ad newAd = new Ad(id,  "userID", List.of("imageUrl"), "desc", 10000, "BMW", "X5", 2022,
-                50000, "Diesel", "Automatic", "Germany");
+        Ad newAd = Ad.builder()
+                    .id(id)
+                    .userId("userID")
+                    .images(List.of("imageUrl"))
+                    .description("desc")
+                    .price(10000.00)
+                    .status(AdStatus.ACTIVE)
+                    .createdAt(LocalDateTime.now())
+                    .brand("BMW")
+                    .model("X5")
+                    .year(2022)
+                    .mileage(50000)
+                    .fuel("Diesel")
+                    .transmission("42285")
+                    .location("Wuppertal")
+                    .build();
+
         when(adRepository.findById(id)).thenReturn(Optional.of(newAd));
 
         //When
@@ -118,5 +132,97 @@ class AdServiceTest {
         assertThat(exception.getMessage())
                 .isEqualTo("Ad with id " + id + " does not exist");
         verify(adRepository).findById(id);
+    }
+
+    @Test
+    @DisplayName("Should return ads by userId")
+    void getAdsByUserId() {
+        //Given
+        String userId = UUID.randomUUID().toString();
+        String id = UUID.randomUUID().toString();
+        Ad ad = Ad.builder()
+                .id(id)
+                .userId(userId)
+                .images(List.of("imageUrl"))
+                .description("desc")
+                .price(10000)
+                .status(AdStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .brand("BMW")
+                .model("X5")
+                .year(2022)
+                .mileage(50000)
+                .fuel("Diesel")
+                .transmission("42285")
+                .location("Wuppertal")
+                .build();
+
+        when(adRepository.findByUserId(userId)).thenReturn(List.of(ad));
+
+        //When
+        List<Ad> ads = adService.getAdsByUserId(userId);
+
+        //Then
+        assertThat(ads).isEqualTo(List.of(ad));
+        verify(adRepository).findByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("Update ad with reordered images and updated fields")
+    void updateAd_WithMixedImagesAndFieldUpdates() {
+
+        // GIVEN
+        Ad existingAd = Ad.builder()
+                .id("ad1")
+                .description("old desc")
+                .price(1000)
+                .mileage(10000)
+                .images(List.of(
+                        "http://old-image-1",
+                        "http://old-image-2"
+                ))
+                .build();
+
+        when(adRepository.findById("ad1"))
+                .thenReturn(Optional.of(existingAd));
+
+        MultipartFile newFile = mock(MultipartFile.class);
+
+        when(cloudinaryService.uploadImage(newFile))
+                .thenReturn("http://new-image");
+
+        AdRequestDto dto = AdRequestDto.builder()
+                .description("new desc")
+                .price(2000)
+                .mileage(5000)
+                .images(List.of(
+                        "http://old-image-1",
+                        "new_0",
+                        "http://old-image-2"
+                ))
+                .build();
+
+        when(adRepository.save(any()))
+                .thenAnswer(i -> i.getArgument(0));
+
+        Ad updated = adService.updateAd(
+                "ad1",
+                dto,
+                List.of(newFile)
+        );
+
+        assertThat(updated.description()).isEqualTo("new desc");
+        assertThat(updated.price()).isEqualTo(2000);
+        assertThat(updated.mileage()).isEqualTo(5000);
+
+        assertThat(updated.images())
+                .containsExactly(
+                        "http://old-image-1",
+                        "http://new-image",
+                        "http://old-image-2"
+                );
+
+        verify(cloudinaryService).uploadImage(newFile);
+        verify(adRepository).save(any());
     }
 }

@@ -2,36 +2,96 @@
 
 .seller-card {
   background: var(--color-surface);
-  padding: 25px;
+  padding: 28px;
   border-radius: 20px;
   box-shadow: var(--shadow-medium);
   position: sticky;
   top: 100px;
 
-  &__price {
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--color-primary);
-    margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: $space-lg;
+
+  &__top, &__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
   }
+
+  &__price {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  &__location {
+    font-size: $font-size-sm;
+    color: var(--color-text-muted);
+  }
+
 
   &__auto {
     &-block {
       display: flex;
-      color: var(--color-text);
-      gap: $space-sm;
       flex-direction: column;
-      margin-bottom: $space-md;
+      gap: 4px;
     }
 
     &-title {
       font-size: $font-size-xl;
       font-weight: 800;
+      color: var(--color-text);
     }
 
     &-subtitle {
       font-size: $font-size-lg;
+      color: var(--color-text-muted);
       font-weight: 600;
+    }
+  }
+
+  &__seller {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+
+    padding: $space-md;
+    border-radius: 14px;
+    background: var(--color-surface-light);
+  }
+
+  &__avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-border);
+  }
+
+  &__seller-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__seller-name {
+    font-weight: 700;
+    font-size: $font-size-md;
+    color: var(--color-text);
+  }
+
+  &__phone {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: $font-size-sm;
+    color: var(--color-primary);
+    font-weight: 600;
+
+    svg {
+      font-size: 18px;
     }
   }
 }

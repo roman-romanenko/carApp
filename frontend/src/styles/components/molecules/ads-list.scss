@@ -1,0 +1,14 @@
+@use "../../variables" as *;
+
+.ads-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  gap: $space-lg;
+  margin-top: $space-lg;
+}
+
+@media(max-width: 620px) {
+  .ads-list {
+    grid-template-columns: 1fr;
+  }
+}

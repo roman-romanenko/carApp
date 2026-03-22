@@ -10,6 +10,8 @@ import MainLayout from "./components/organisms/MainLayout";
 import NotFound from "./pages/NotFound";
 import CreateAdPage from "./pages/Ads/components/create.tsx";
 import AdDetailsPage from "./pages/Ads/components/details.tsx";
+import ProfilePage from "./pages/Profile";
+import UpdateAdPage from "./pages/Ads/components/update.tsx";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
 
                       <Route element={<ProtectedRoute/>}>
                           <Route path={APP_ROUTES.ads.create} element={<CreateAdPage/>} />
+                          <Route path={APP_ROUTES.ads.update} element={<UpdateAdPage/>} />
+                          <Route path={APP_ROUTES.profile.index} element={<ProfilePage/>} />
                       </Route>
 
                       <Route path="*" element={<NotFound/>}/>

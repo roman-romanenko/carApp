@@ -2,6 +2,7 @@ import type {FieldConfig} from "../../components/organisms/FormBuilder/types.ts"
 import Input from "../../components/atoms/Input";
 import ImageUploader from "../../components/molecules/ImageUploader";
 import Textarea from "../../components/atoms/TextArea";
+import type {CreateEditConfig} from "./types.ts";
 
 export const useSearchFormConfig = () => {
     return [
@@ -33,13 +34,18 @@ export const useSearchFormConfig = () => {
     ]
 }
 
-export const useCreateEditFormConfig = (): FieldConfig[][] => {
+export const useCreateEditFormConfig = ({ isEdit }: CreateEditConfig = {}): FieldConfig[][] => {
     const step1 = getStep1Config();
-    const step2 = getStep2Config();
+    const step2 = getStep2Config({ isEdit });
     const step3 = getStep3Config();
     const step4 = getStep4Config();
+    const step5 = getStep5Config();
 
- return [step1, step2, step3, step4]
+    if(isEdit) {
+        return [step2, step3, step5]
+    }
+
+    return [step1, step2, step3, step4, step5]
 }
 
 const getStep1Config = (): FieldConfig[] => ([
@@ -68,9 +74,32 @@ const getStep1Config = (): FieldConfig[] => ([
                 placeholder: "2013",
             },
         },
+
+    ]
+)
+
+const getStep2Config = ({ isEdit }: CreateEditConfig = {}): FieldConfig[] => ([
         {
-            name: "price",
-            label: "Price",
+            name: "fuel",
+            label: "Fuel",
+            component: Input,
+            componentProps: {
+                placeholder: "Fuel",
+                disabled: isEdit
+            },
+        },
+        {
+            name: "transmission",
+            label: "Transmission",
+            component: Input,
+            componentProps: {
+                placeholder: "Transmission",
+                disabled: isEdit
+            },
+        },
+        {
+            name: "mileage",
+            label: "Mileage",
             component: Input,
             componentProps: {
                 type: "number",
@@ -78,9 +107,9 @@ const getStep1Config = (): FieldConfig[] => ([
             },
         },
     ]
-)
+);
 
-const getStep2Config = (): FieldConfig[] => ([
+const getStep3Config = (): FieldConfig[] => ([
         {
             name: "images",
             label: "Photos",
@@ -97,34 +126,6 @@ const getStep2Config = (): FieldConfig[] => ([
     ]
 )
 
-const getStep3Config = (): FieldConfig[] => ([
-        {
-            name: "mileage",
-            label: "Mileage",
-            component: Input,
-            componentProps: {
-                type: "number",
-                placeholder: "45000",
-            },
-        },
-        {
-            name: "fuel",
-            label: "Fuel",
-            component: Input,
-            componentProps: {
-                placeholder: "Fuel",
-            },
-        },
-        {
-            name: "transmission",
-            label: "Transmission",
-            component: Input,
-            componentProps: {
-                placeholder: "Transmission",
-            },
-        },
-    ]
-);
 
 const getStep4Config = (): FieldConfig[] => ([
         {
@@ -149,6 +150,19 @@ const getStep4Config = (): FieldConfig[] => ([
             component: Input,
             componentProps: {
                 placeholder: "42285",
+            },
+        },
+    ]
+);
+
+const getStep5Config = (): FieldConfig[] => ([
+        {
+            name: "price",
+            label: "Price",
+            component: Input,
+            componentProps: {
+                type: "number",
+                placeholder: "45000",
             },
         },
     ]

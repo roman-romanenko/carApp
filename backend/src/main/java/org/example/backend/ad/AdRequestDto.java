@@ -1,5 +1,10 @@
 package org.example.backend.ad;
 
+import lombok.Builder;
+
+import java.util.List;
+
+@Builder
 public record AdRequestDto(
         String description,
         double price,
@@ -11,6 +16,7 @@ public record AdRequestDto(
         String transmission,
         String zip,
         String country,
-        String city
+        String city,
+        List<String> images
 ) {
 }

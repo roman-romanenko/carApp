@@ -7,16 +7,18 @@ import StepProgress from "../../../components/atoms/StepProgress";
 import AdPreview from "../../../components/molecules/AdCreatePreview";
 import Button from "../../../components/atoms/Button";
 import type {AdRequestType} from "../types.ts";
+import Loader from "../../../components/atoms/Loader";
 
 const CreateAdPage = () => {
     const steps = useCreateEditFormConfig();
     const stepTitles = [
         "Basic Info",
-        "Photos & Description",
         "Technical",
-        "Location"
+        "Photos & Description",
+        "Location",
+        "Price",
     ];
-    const { onCreate } = useApiHelpers();
+    const { onCreate, loading } = useApiHelpers();
     const [step, setStep] = useState(0);
     const [formData, setFormData] = useState({});
     const [showPreview, setShowPreview] = useState(false);
@@ -34,6 +36,10 @@ const CreateAdPage = () => {
 
     const handlePreviewButtonClick = () => {
         setShowPreview(prev => !prev)
+    }
+
+    if (loading) {
+        return <Loader />;
     }
 
     return (
@@ -55,7 +61,7 @@ const CreateAdPage = () => {
             )}
 
             <div className={`create-layout ${showPreview ? "preview-open" : ""}`}>
-                <Card title="Create New Ad">
+                <Card title="Create New Ad" maxContentSize={"sm"}>
                     <FormBuilder
                         config={steps[step]}
                         initialValues={formData}

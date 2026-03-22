@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { APP_ROUTES } from "../../../system/router/constants.ts";
 import type {HeaderMenuProps} from "./types.ts";
+import {generateUrl, getUserDisplayName} from "../../../system/helpers/functions.ts";
+import type {ProfileTabsType} from "../../../pages/Profile/types.ts";
 
 const HeaderMenu = ({
     user,
@@ -41,21 +43,41 @@ const HeaderMenu = ({
         setDropdownOpen(prev => !prev)
     }
 
+    const goToProfileTab = (tab?: ProfileTabsType) => {
+        return generateUrl(APP_ROUTES.profile.index, { tab });
+    };
+
     return (
         <div className="user-header-menu" ref={dropdownRef}>
             <button className="user-box" onClick={handleHeaderMenuOpenClick}>
                 <img src={user.avatarUrl} alt="avatar" className="user-avatar"/>
-                <span className="user-name">{user.username}</span>
+                <span className="user-name">{getUserDisplayName(user)}</span>
             </button>
 
             {dropdownOpen && (
                 <div className="header-menu-dropdown">
                     <NavLink
-                        to={APP_ROUTES.profile.index}
+                        to={goToProfileTab("info")}
                         className="header-menu-item"
                         onClick={closeMenu}
                     >
                         My Cabinet
+                    </NavLink>
+
+                    <NavLink
+                        to={goToProfileTab("ads")}
+                        className="header-menu-item"
+                        onClick={closeMenu}
+                    >
+                        My Ads
+                    </NavLink>
+
+                    <NavLink
+                        to={goToProfileTab("favorites")}
+                        className="header-menu-item"
+                        onClick={closeMenu}
+                    >
+                        Favorites ({user?.favoriteAdIds?.length || 0})
                     </NavLink>
 
                     <button

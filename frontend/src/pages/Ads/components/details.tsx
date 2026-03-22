@@ -1,24 +1,32 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import type {AdResponeType} from "../types.ts";
+import type {AdResponeType, UserAdInfo} from "../types.ts";
 import Gallery from "../../../components/molecules/Gallery";
 import SellerInfoCard from "../../../components/molecules/SellerInfoCard";
 import TechnicalData from "../../../components/molecules/TechnicalData";
 import {useApiHelpers} from "../apiHooks.ts";
 import NotFound from "../../NotFound";
+import Loader from "../../../components/atoms/Loader";
 
 const AdDetailsPage = () => {
     const { id } = useParams();
-    const { onGetAd, loading } = useApiHelpers();
+    const { onGetAd, loading, onGetSeller } = useApiHelpers();
     const [ad, setAd] = useState<AdResponeType | null>(null);
-
+    const [seller, setSeller] = useState<UserAdInfo | null>(null)
     useEffect(() => {
         if (!id) return;
 
         onGetAd(id, setAd)
+
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
+    useEffect(() => {
+        if(!ad || !ad?.userId) return
+
+        onGetSeller(ad.userId, setSeller)
+    }, [ad]);
+
+    if (loading) return <Loader />;
 
     if(!ad) return <NotFound />
 
@@ -26,7 +34,7 @@ const AdDetailsPage = () => {
         <div className="details">
             <div className="details__top">
                 <Gallery images={ad?.images} />
-                <SellerInfoCard ad={ad} />
+                <SellerInfoCard ad={ad} sellerInfo={seller} />
             </div>
 
             <TechnicalData ad={ad} />

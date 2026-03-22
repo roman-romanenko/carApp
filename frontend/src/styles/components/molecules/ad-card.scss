@@ -1,54 +1,156 @@
 @use "../../variables" as *;
+
 .ad-card {
+  position: relative;
+  display: flex;
+  gap: 20px;
   background: var(--color-surface-light);
   border-radius: $radius-lg;
   box-shadow: var(--shadow-soft);
-  overflow: hidden;
+  padding: 20px;
   transition: $transition-normal;
-  cursor: pointer;
 
   &:hover {
     box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+  }
+
+  &__favorite {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+
+    &.active {
+      color: red;
+      opacity: 1;
+    }
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__media {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__main-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: $radius-lg;
   }
 
   &__thumbs {
     display: flex;
-    gap: 4px;
-    padding: 6px;
+    gap: 8px;
+    overflow: scroll;
 
     img {
-      width: 100%;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 6px;
       flex: 1;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      opacity: 0.85;
+      transition: 0.3s;
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.03);
+      }
     }
   }
 
-  &__image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-
-  &__body {
-    padding: $space-md;
+  /* RIGHT */
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   &__title {
-    font-size: $font-size-lg;
-    font-weight: 600;
+    font-size: $font-size-xl;
+    font-weight: 700;
     color: var(--color-text);
+    margin-bottom: 6px;
   }
 
   &__price {
-    font-size: $font-size-md;
-    color: var(--color-secondary);
-    margin: 4px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 12px;
   }
 
-  &__details {
+  &__tech {
+    display: flex;
+    gap: 18px;
     font-size: $font-size-sm;
     color: var(--color-text-muted);
+    margin-bottom: 12px;
+
+    span {
+      background: var(--color-surface);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    max-width: 500px;
+  }
+
+  /* ACTIONS */
+  &__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    button {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-edit {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .btn-deactivate {
+      background: var(--color-warning);
+      color: white;
+    }
+
+    .btn-sold {
+      background: var(--color-success);
+      color: white;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
   }
 }
+
+@media (max-width: 620px) {
+  .ad-card {
+    flex-direction: column;
+  }
+}
+

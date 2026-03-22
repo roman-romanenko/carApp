@@ -43,23 +43,23 @@
 
   &.btn-primary {
     background: var(--color-primary);
-    color: var(--color-text);
+    color: white;
   }
 
   &.btn-secondary {
     background: var(--color-secondary);
-    color: var(--color-text);
+    color: white;
   }
 
   &.btn-outline {
     background: transparent;
     border: 2px solid var(--color-primary);
-    color: var(--color-primary);
+    color: white;
   }
 
   &.btn-danger {
     background: var(--color-accent);
-    color: var(--color-text);
+    color: white;
   }
 
 }

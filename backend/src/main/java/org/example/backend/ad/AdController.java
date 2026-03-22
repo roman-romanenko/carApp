@@ -33,15 +33,40 @@ public class AdController {
         return ResponseEntity.ok(ad);
     }
 
+    @GetMapping("/user")
+    public List<Ad> getAdsByUserId(@AuthenticationPrincipal OAuth2User user,
+                                   @RequestParam(required = false) AdStatus status) {
+        return adService.getAdsByUserIdAndStatus(user.getName(), status);
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> createAd(
             @RequestPart("data") AdRequestDto dto,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
             @AuthenticationPrincipal OAuth2User user
     ) {
         String userId = user.getName();
-        Ad ad = adService.createAd(dto, files, userId);
+        Ad ad = adService.createAd(dto, newImages, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ad);
     }
+
+    @PutMapping("/{id}")
+    public Ad updateAd(
+            @PathVariable String id,
+            @RequestPart("data") AdRequestDto dto,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages
+    ) {
+        return adService.updateAd(id, dto, newImages);
+    }
+
+    @PatchMapping("/{id}/{status}")
+    public Ad updateAdStatus(
+            @PathVariable String id,
+            @PathVariable AdStatus status,
+            @AuthenticationPrincipal OAuth2User user) {
+
+        return adService.updateAdStatus(id, user.getName(), status);
+    }
+
 }

@@ -1,22 +1,29 @@
 .card {
-  min-height: 100vh;
-  padding: 4rem 1.5rem;
+  //flex: 1;
+  min-height: 0;
+  padding: 1.5rem;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  background: var(--color-page-bg);
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-surface);
   animation: fadeInPage 0.4s ease;
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
 
   &__content {
     width: 100%;
-    max-width: 700px;
-    padding: 3rem;
-    border-radius: 24px;
     background: var(--color-card-bg);
     backdrop-filter: blur(16px);
     box-shadow: var(--shadow-card);
     transition: transform 0.3s ease;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+
+    &--sm {
+      max-width: 700px;
+    }
   }
 
   &__header {

@@ -14,10 +14,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -79,7 +81,7 @@ class AdControllerTest {
 
         MockMultipartFile file =
                 new MockMultipartFile(
-                        "files",
+                        "newImages",
                         "image.jpg",
                         MediaType.IMAGE_JPEG_VALUE,
                         "image".getBytes()
@@ -99,9 +101,19 @@ class AdControllerTest {
     void getAdById() throws Exception {
         //Given
         String id = "1";
-        Ad ad = new Ad(id, "user1", List.of(), "desc", 10000,
-                "BMW", "X5", 2022, 50000,
-                "Diesel", "Automatic", "Germany");
+        Ad ad = Ad.builder()
+                .id(id)
+                .userId("userID")
+                .images(List.of("imageUrl"))
+                .description("desc")
+                .brand("BMW")
+                .model("X5")
+                .year(2022)
+                .mileage(50000)
+                .fuel("Diesel")
+                .transmission("42285")
+                .location("Wuppertal")
+                .build();
         when(adService.getAdById(id)).thenReturn(ad);
 
         //When + Then
@@ -126,5 +138,107 @@ class AdControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.errorMessage").value("Ad with id " + id + " does not exist"));
+    }
+
+    @Test
+    @DisplayName("Should return ads by userId")
+    void getAdsByUserId() throws Exception {
+        //Given
+        String userId = "1";
+        String adId = UUID.randomUUID().toString();
+        Ad ad = Ad.builder()
+                .id(adId)
+                .userId(userId)
+                .images(List.of("imageUrl"))
+                .description("desc")
+                .price(10000)
+                .status(AdStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .brand("BMW")
+                .model("X5")
+                .year(2022)
+                .mileage(50000)
+                .fuel("Diesel")
+                .transmission("42285")
+                .location("Wuppertal")
+                .build();
+        when(adService.getAdsByUserIdAndStatus(userId, AdStatus.ACTIVE)).thenReturn(List.of(ad));
+
+        //When + Then
+        mockMvc.perform(get("/api/ads/user?status=ACTIVE").with(oauth2Login()
+                        .attributes(attrs -> attrs.put("sub", userId))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(adId))
+                .andExpect(jsonPath("$.[0].userId").value(userId))
+                .andExpect(jsonPath("$.[0].description").value("desc"))
+                .andExpect(jsonPath("$.[0].brand").value("BMW"))
+                .andExpect(jsonPath("$.[0].model").value("X5"));
+    }
+
+    @Test
+    @DisplayName("PUT /api/ads/{id} updates ad with new images")
+    void updateAd() throws Exception {
+        String id = "ad1";
+
+        Ad ad = Ad.builder()
+                .id(id)
+                .description("updated desc")
+                .year(2022)
+                .price(2000)
+                .mileage(5000)
+                .images(List.of(
+                        "http://old-image-1",
+                        "http://new-image",
+                        "http://old-image-2"
+                ))
+                .build();
+
+        when(adService.updateAd(anyString(), any(), any()))
+                .thenReturn(ad);
+
+        MockMultipartFile json = new MockMultipartFile(
+                "data",
+                null,
+                MediaType.APPLICATION_JSON_VALUE,
+                """
+                {
+                    "description":"updated desc",
+                    "year":"2022",
+                    "price":2000,
+                    "mileage":5000,
+                    "images":[
+                        "http://old-image-1",
+                        "new_0",
+                        "http://old-image-2"
+                    ]
+                }
+                """.getBytes()
+        );
+
+        MockMultipartFile file = new MockMultipartFile(
+                "newImages",
+                "image.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "image".getBytes()
+        );
+
+        // WHEN + THEN
+        mockMvc.perform(
+                        multipart("/api/ads/{id}", id)
+                                .file(json)
+                                .file(file)
+                                .with(oauth2Login())
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.description").value("updated desc"))
+                .andExpect(jsonPath("$.price").value(2000))
+                .andExpect(jsonPath("$.mileage").value(5000))
+                .andExpect(jsonPath("$.images[1]").value("http://new-image"));
+        verify(adService).updateAd(anyString(), any(), any());
     }
 }

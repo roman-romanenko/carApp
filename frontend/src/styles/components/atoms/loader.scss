@@ -1,0 +1,56 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease;
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.logo-loader {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  position: relative;
+}
+
+.loader-line {
+  margin-top: 25px;
+  height: 4px;
+  width: 200px;
+  border-radius: 10px;
+  background: var(--color-border);
+  overflow: hidden;
+  position: relative;
+}
+
+.loader-line::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(
+                  90deg,
+                  transparent,
+                  var(--color-primary),
+                  transparent
+  );
+  animation: loadingMove 1.2s infinite linear;
+}
+
+@keyframes loadingMove {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
